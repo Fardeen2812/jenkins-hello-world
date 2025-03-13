@@ -51,6 +51,8 @@ pipeline {
         }
     }
     
+}
+    
         
     post {
         always {
