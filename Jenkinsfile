@@ -6,37 +6,49 @@ pipeline {
     }
 
     stages {
-        stage('Check Maven Version') {
-            steps {
-                sh 'mvn --version'  // This checks the Maven version on the build agent
-            }
-        }
-
-        
 
         stage('Build') {
             steps {
                 // Run Maven package
                 sh 'mvn clean package -DskipTests=true'
+                archiveArtifacts 'target/hello-demo-*.jar'
             }
         }
 
         stage('Unit Test') {
             steps {
                 sh 'mvn test'  // This runs the unit tests
+                junit(testResults: 'target/surefire-reports/Test-*.xml',keepProperties: true,keepTestNames: true)
             }
         }
 
-        stage('Post-Build Actions') {
+        stage('Containarization ') {
             steps {
                 script {
                     // Archive test results
-                    junit 'target/surefire-reports/*.xml'
+                    sh 'echo Docker build Image'
+                    sh 'echo Docker Tag Image'
+                    sh 'echo Docker Push Image'
                 }
             }
         }
     }
 
+    stage('Kubernetes Deployment'){
+        steps {
+            sh 'echo Deploy to kubernates using ArgoCD'
+            
+        }
+    }
+
+    Stage('Integration Testing') {
+        steps {
+            sh "sleep 10s"
+            sh 'echo Testing using Curl commands...'
+        }
+    }
+    
+        
     post {
         always {
             // Clean up workspace after build
