@@ -10,6 +10,8 @@ pipeline {
             steps {
                 sh 'echo Print Maven version'
                 sh 'mvn --version'  // This checks the Maven version on the build agent
+                sh "echo Sleep-time - ${params.SLEEP_TIME}, port - ${params.APP_PORT}, Branch - ${param.BRANCH_NAME}"
+            
             }
         }
 
@@ -46,8 +48,8 @@ pipeline {
 
     stage('Integration Testing') {
         steps {
-            sh 'sleep 5s'
-            sh 'curl -s http://localhost:6767/hello'
+            sh 'sleep "${params.SLEEP_TIME}"'
+            sh 'curl -s http://localhost:$"${params.APP_PORT}"/hello'
         }
     }
     
