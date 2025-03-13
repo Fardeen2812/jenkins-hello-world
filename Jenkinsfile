@@ -10,7 +10,7 @@ pipeline {
             steps {
                 sh 'echo Print Maven version'
                 sh 'mvn --version'  // This checks the Maven version on the build agent
-                sh "echo Sleep-time - ${params.SLEEP_TIME}, port - ${params.APP_PORT}, Branch - ${param.BRANCH_NAME}"
+                sh "echo Sleep-time - ${params.SLEEP_TIME}, port - ${params.APP_PORT}, Branch - ${params.BRANCH_NAME}"
             
             }
         }
