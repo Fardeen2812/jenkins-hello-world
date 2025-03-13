@@ -8,6 +8,7 @@ pipeline {
     stages {
         stage('Check Maven Version') {
             steps {
+                sh 'echo Print Maven version'
                 sh 'mvn --version'  // This checks the Maven version on the build agent
             }
         }
@@ -18,6 +19,7 @@ pipeline {
             steps {
                 // Run Maven package
                 sh 'mvn clean package -DskipTests=true'
+                archiveArtifacts 'target/hello-demo-*.jar'
             }
         }
 
@@ -31,12 +33,25 @@ pipeline {
             steps {
                 script {
                     // Archive test results
-                    junit 'target/surefire-reports/*.xml'
+                    junit(testResults: 'target/surefire-reports/*.xml',keepProperties: true,keepTestNames: true)
                 }
             }
         }
     }
 
+    stage('Local Deployment'){
+        steps {
+            sh """ java -jar targets/hello-demo-*.jar > /dev/null & """
+        }
+    }
+
+    Stage('Integration Testing') {
+        steps {
+            sh 'curl -s http://localhost:6767/hello'
+        }
+    }
+    
+        
     post {
         always {
             // Clean up workspace after build
